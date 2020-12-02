@@ -1,3 +1,68 @@
+
+<?php
+$servername= 'localhost';
+$username= 'root';
+$password= '';
+$dbname= 'project4_ecommerce';
+
+$connection = new mysqli($servername,$username,$password,$dbname);
+
+
+if($connection->connect_error){
+    echo 'error';
+}else{
+    // echo 'connected successfully';
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST"){
+    $name =($_POST["name"]);
+    $desc =($_POST["desc"]);
+    $file=$_FILES['file'];
+  
+
+    $filename=$_FILES['file']['name'];
+    $filetmpname=$_FILES['file']['tmp_name'];
+    $filesize=$_FILES['file']['size'];
+    $fileError=$_FILES['file']['error'];
+    $filetype=$_FILES['file']['type'];
+    
+
+// var_dump($filetype);die;
+  $fileExt=explode(".", $filename);
+
+  $fileActualExt= strtolower(end($fileExt));
+
+  $allowed = array('jpg','jpeg','png','pdf');
+    
+
+  if(in_array( $fileActualExt, $allowed )){
+      if($fileError === 0){
+
+            if( $filesize < 1000000){
+              $fileNameNEW=uniqid('', true). "." .$fileActualExt;
+              $fileDestination = 'images/categories_images/'.$fileNameNEW;
+            //   var_dump($fileDestination);die;
+
+              move_uploaded_file( $filetmpname, $fileDestination);       
+              $connection->query($sql = "INSERT INTO categories (category_name, category_desc , category_image) Values ('$name', '$desc','$fileDestination')"); 
+         
+            } else {
+                echo "your file is too big";
+              }   
+  
+        }else{
+           echo "there was an error uploading your file";
+    }
+    }else {
+      echo "you cannot upload files";
+  }
+  
+  }
+  
+    
+?>
+
+
 <!doctype html>
 <html lang="en">
  
@@ -218,74 +283,33 @@
                         <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-1"></div>
                         <div class="col-xl-10 col-lg-10 col-md-10 col-sm-10 col-10">
                             <div class="card">
-                                <h5 class="card-header">Bootstrap Validation Form</h5>
+                                <h5 class="card-header">Manage Categories</h5>
                                 <div class="card-body">
-                                    <form class="needs-validation" novalidate>
+                                    <form class="needs-validation" action=""  method="post" enctype="multipart/form-data">
                                         <div class="row">
-                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 ">
-                                                <label for="validationCustom01">First name</label>
-                                                <input type="text" class="form-control" id="validationCustom01" placeholder="First name" value="Mark" required>
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                                <label for="validationCustom01">Category name</label>
+                                                <input type="text" class="form-control" id="validationCustom01"  name="name"  placeholder="First name" value="Mark" required>
                                                 <div class="valid-feedback">
                                                     Looks good!
                                                 </div>
                                             </div>
-                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 ">
-                                                <label for="validationCustom02">Last name</label>
-                                                <input type="text" class="form-control" id="validationCustom02" placeholder="Last name" value="Otto" required>
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mt-3">
+                                                <label for="validationCustom01">Category desc</label>
+                                                <textarea rows="6" cols="50" name="desc"  style="width:100%">   Enter text here...</textarea><br>
                                                 <div class="valid-feedback">
                                                     Looks good!
                                                 </div>
-                                            </div>
-                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 ">
-                                                <label for="validationCustomUsername">Username</label>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text" id="inputGroupPrepend">@</span>
-                                                    </div>
-                                                    <input type="text" class="form-control" id="validationCustomUsername" placeholder="Username" aria-describedby="inputGroupPrepend" required>
-                                                    <div class="invalid-feedback">
-                                                        Please choose a username.
-                                                    </div>
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12  mt-3">
+                                                <label for="validationCustom02">category img</label>
+                                                <input type="file" class="form-control" id="validationCustom02" value= "choose file" name="file">
+                                                <div class="valid-feedback">
+                                                    Looks good!
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="form-row">
-                                            <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 mb-2">
-                                                <label for="validationCustom03">City</label>
-                                                <input type="text" class="form-control" id="validationCustom03" placeholder="City" required>
-                                                <div class="invalid-feedback">
-                                                    Please provide a valid city.
-                                                </div>
-                                            </div>
-                                            <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 mb-2">
-                                                <label for="validationCustom04">State</label>
-                                                <input type="text" class="form-control" id="validationCustom04" placeholder="State" required>
-                                                <div class="invalid-feedback">
-                                                    Please provide a valid state.
-                                                </div>
-                                            </div>
-                                            <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 mb-2">
-                                                <label for="validationCustom05">Zip</label>
-                                                <input type="text" class="form-control" id="validationCustom05" placeholder="Zip" required>
-                                                <div class="invalid-feedback">
-                                                    Please provide a valid zip.
-                                                </div>
-                                            </div>
-                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                                                <div class="form-group">
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
-                                                        <label class="form-check-label" for="invalidCheck">
-                                                            Agree to terms and conditions
-                                                        </label>
-                                                        <div class="invalid-feedback">
-                                                            You must agree before submitting.
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 ">
-                                                <button class="btn btn-primary" type="submit">Submit form</button>
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mt-3 mr-3" >
+                                                <button class="btn btn-primary  type="submit">Submit form</button>
                                             </div>
                                         </div>
                                     </form>
@@ -297,59 +321,70 @@
                         <!-- end validation form -->
                         <!-- ============================================================== -->
                     </div>
-
                     <div class="row">
                     <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-1"></div>
-                        
                         <div class="col-xl-10 col-lg-10 col-md-10 col-sm-10 col-10">
                             <div class="card">
-                                <h5 class="card-header">Striped Table</h5>
+                                <h5 class="card-header">Categories Table</h5>
                                 <div class="card-body">
                                     <table class="table table-striped">
                                         <thead>
                                             <tr>
-                                                <th scope="col">#</th>
-                                                <th scope="col">First</th>
-                                                <th scope="col">Last</th>
-                                                <th scope="col">Handle</th>
+                                                <th scope="col">ID</th>
+                                                <th scope="col">category name</th>
+                                                <th scope="col">category Description</th>
+                                                <th scope="col">category img</th>
+                                                <th scope="col">edit</th>
+                                                <th scope="col">delete</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <th scope="row">1</th>
-                                                <td>Mark</td>
-                                                <td>Otto</td>
-                                                <td>@mdo</td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">2</th>
-                                                <td>Jacob</td>
-                                                <td>Thornton</td>
-                                                <td>@fat</td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">3</th>
-                                                <td>Larry</td>
-                                                <td>the Bird</td>
-                                                <td>@twitter</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                        <tr>
+        <?php $categories = array();
+    $records=$connection->query("select * from categories");
+
+    // var_dump( $records);die;
+    while($row = $records->fetch_assoc()){
+      $categories[]=$row;
+  }
+
+//    var_dump( $categories);die;
+  // ?>
+  <?php foreach($categories as $key=>$val){ ?>
+ <tr>
+ <td><?php echo $val['category_id']?></td>
+      <td><?php echo $val['category_name']?></td>
+      <td><?php echo $val['category_desc']?></td>
+
+      <td><img width="100px" height="100px" src="<?php echo $val['category_image']?>" alt="image"></td>
+     
+      <td>
+       <form method="post" acttion="">
+              <input hidden name="uname" value=<?php echo $val['category_name'] ?>/> 
+              
+              <button id="btn"> ediet</button> 
+          </form>
+      </td>
+
+      <td> 
+          <form method="post" acttion="">
+              <input hidden name="uname" value=<?php echo $val['category_name'] ?> />    
+              <button id="btn"> delete</button> 
+          </form>
+      </td>
+  <?php } ?>
+  </tr>
+
+    </tbody>
+  </table>
+
                                 </div>
                             </div>
                         </div>
+                        
                         <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-1"></div>
 </div>
 
-                        
-                        
-                        
-                        
-                        
-                        
-                    </div>
-                </div>
-            </div>
             <!-- ============================================================== -->
             <!-- footer -->
             <!-- ============================================================== -->
