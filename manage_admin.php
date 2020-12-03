@@ -1,3 +1,78 @@
+<?php
+
+// ini_set('session.gc_maxlifetime', 3600);
+
+// // each client should remember their session id for EXACTLY 1 hour
+// session_set_cookie_params(3600);
+
+
+session_start();
+
+if(isset($_SESSION['super_admin'])){
+
+}
+else{
+    echo "NOT ALLOWED TO VIEW THIS PAGE";
+    die();
+}
+
+// if(isset($_SESSION['admin'])){
+//     header("location:index.php");
+
+// }
+
+// if(!isset($_SESSION['admin'])){
+//     header("location:admin_login.php");
+
+// }
+
+$connection = mysqli_connect("localhost","root","","project4_ecommerce");
+if(!$connection){
+    die("cannot connect to server");
+}
+
+
+
+
+
+if(isset($_POST['admin_submit'])){
+
+    $admin_email=$_POST['admin_email'];
+    $admin_password=$_POST['admin_password'];
+    $admin_name=$_POST['admin_name'];
+    $admin_role=$_POST['role'];
+
+
+    $query="SELECT * FROM admins;";
+
+    $result=mysqli_query($connection, $query);
+
+    if(mysqli_num_rows($result) > 0){
+
+        $query="INSERT INTO admins (admin_email, admin_password ,admin_name, admin_role) 
+        VALUES ('$admin_email', '$admin_password' ,'$admin_name', '$admin_role');";
+
+        mysqli_query($connection, $query);
+
+
+    }
+    else{
+        echo "This Email already exists";
+        die();
+    }
+
+
+
+
+    
+
+}
+
+  
+?>
+
+
+
 <!doctype html>
 <html lang="en">
  
@@ -217,97 +292,47 @@
                         <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-1"></div>
                         <div class="col-xl-10 col-lg-10 col-md-10 col-sm-10 col-10">
                             <div class="card">
-                                <h5 class="card-header">Admins Adding</h5>
+                                <h5 class="card-header">Add New Admin</h5>
                                 <div class="card-body">
-                                    <form class="needs-validation" novalidate>
+                                    <form  method="POST" class="needs-validation" novalidate>
                                         <div class="row">
                                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 ">
                                                 <label for="validationCustom01">Name</label>
-                                                <input type="text" class="form-control" id="validationCustom01" placeholder="First name" value="Mark" required>
+                                                <input type="text" class="form-control" id="validationCustom01" name="admin_name" placeholder="First name" value="Mark" required>
                                                 <!-- <div class="valid-feedback">
                                                     Looks good!
                                                 </div> -->
                                             </div>
                                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mt-3 ">
-                                                <label for="validationCustom01">Email</label>
-                                                <input type="text" class="form-control" id="validationCustom01" placeholder="Email Address" value="Mark" required>
+                                                <label for="validationCustom01">Email Address</label>
+                                                <input type="text" class="form-control" name="admin_email" id="validationCustom01" placeholder="Email Address" value="Mark" required>
                                                 <!-- <div class="valid-feedback">
                                                     Looks good!
                                                 </div> -->
                                             </div>
                                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mt-3 ">
                                                 <label for="validationCustom01">Password</label>
-                                                <input type="password" class="form-control" id="validationCustom01" placeholder="Password" value="Mark" required>
+                                                <input type="password" class="form-control" name="admin_password" id="validationCustom01" placeholder="Password" value="Mark" required>
                                                 <!-- <div class="valid-feedback">
                                                     Looks good!
                                                 </div> -->
                                             </div>
-                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mt-3 ">
-                                                <label for="validationCustom01"></label>
-                                                <input type="password" class="form-control" id="validationCustom01" placeholder="Password" value="Mark" required>
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mt-3 mb-5 ">
+                                                <label for="validationCustom01">Role</label><br>
+                                                <select name="role" id="role">
+                                                    <option value="super_admin">Super Admin</option>
+                                                    <option value="admin">Admin</option>
+                                                    
+                                                </select>
                                                 <!-- <div class="valid-feedback">
                                                     Looks good!
                                                 </div> -->
                                             </div>
                                             
-                                            
-                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 ">
-                                                <label for="validationCustom02"></label>
-                                                <input type="text" class="form-control" id="validationCustom02" placeholder="Last name" value="Otto" required>
-                                                <div class="valid-feedback">
-                                                    Looks good!
-                                                </div>
-                                            </div>
-                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 ">
-                                                <label for="validationCustomUsername">Username</label>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text" id="inputGroupPrepend">@</span>
-                                                    </div>
-                                                    <input type="text" class="form-control" id="validationCustomUsername" placeholder="Username" aria-describedby="inputGroupPrepend" required>
-                                                    <div class="invalid-feedback">
-                                                        Please choose a username.
-                                                    </div>
-                                                </div>
-                                            </div>
                                         </div>
                                         <div class="form-row">
-                                            <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 mb-2">
-                                                <label for="validationCustom03">City</label>
-                                                <input type="text" class="form-control" id="validationCustom03" placeholder="City" required>
-                                                <div class="invalid-feedback">
-                                                    Please provide a valid city.
-                                                </div>
-                                            </div>
-                                            <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 mb-2">
-                                                <label for="validationCustom04">State</label>
-                                                <input type="text" class="form-control" id="validationCustom04" placeholder="State" required>
-                                                <div class="invalid-feedback">
-                                                    Please provide a valid state.
-                                                </div>
-                                            </div>
-                                            <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 mb-2">
-                                                <label for="validationCustom05">Zip</label>
-                                                <input type="text" class="form-control" id="validationCustom05" placeholder="Zip" required>
-                                                <div class="invalid-feedback">
-                                                    Please provide a valid zip.
-                                                </div>
-                                            </div>
-                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                                                <div class="form-group">
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
-                                                        <label class="form-check-label" for="invalidCheck">
-                                                            Agree to terms and conditions
-                                                        </label>
-                                                        <div class="invalid-feedback">
-                                                            You must agree before submitting.
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
                                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 ">
-                                                <button class="btn btn-primary" type="submit">Submit form</button>
+                                                <button class="btn btn-primary" name="admin_submit" type="submit">Submit form</button>
                                             </div>
                                         </div>
                                     </form>
@@ -330,31 +355,39 @@
                                     <table class="table table-striped">
                                         <thead>
                                             <tr>
-                                                <th scope="col">#</th>
-                                                <th scope="col">First</th>
-                                                <th scope="col">Last</th>
-                                                <th scope="col">Handle</th>
+                                                <th scope="col">ID</th>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Email Address</th>
+                                                <th scope="col">Role</th>
+                                                <th scope="col">Edit</th>
+                                                <th scope="col">Delete</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <th scope="row">1</th>
-                                                <td>Mark</td>
-                                                <td>Otto</td>
-                                                <td>@mdo</td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">2</th>
-                                                <td>Jacob</td>
-                                                <td>Thornton</td>
-                                                <td>@fat</td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">3</th>
-                                                <td>Larry</td>
-                                                <td>the Bird</td>
-                                                <td>@twitter</td>
-                                            </tr>
+                                        <?php
+                                        $connection = mysqli_connect("localhost","root","","project4_ecommerce");
+                                        if(!$connection){
+                                            die("cannot connect to server");
+                                        }
+
+
+                                        $query="SELECT * FROM admins;";
+                                        $result=mysqli_query($connection, $query);
+                                        if(mysqli_num_rows($result) > 0){
+                                            while($row=mysqli_fetch_assoc($result)){
+                                                echo "<tr>";
+                                                echo "<td>".$row['admin_id']."</td>";
+                                                echo "<td>".$row['admin_name']."</td>";
+                                                echo "<td>".$row['admin_email']."</td>";
+                                                echo "<td>".$row['admin_role']."</td>";
+                                                echo "<td><a href='edit_admins.php?id={$row['admin_id']}' <button class='btn btn-primary'>Edit</button></a></td>";
+                                                echo "<td><a href='delete.php?id={$row['admin_id']}' <button class='btn btn-danger'>Delete</button></a></td>";
+                                                echo "</tr>";
+                                            };
+
+                                        };
+                                       
+                                        ?> 
                                         </tbody>
                                     </table>
                                 </div>

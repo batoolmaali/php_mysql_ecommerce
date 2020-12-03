@@ -1,5 +1,3 @@
-
-
 <?php
 
 session_start();
@@ -12,6 +10,7 @@ else{
     die();
 }
 
+
 $connection= mysqli_connect("localhost", "root", "","project4_ecommerce");
 
 if(!$connection){
@@ -19,19 +18,25 @@ if(!$connection){
 }
 
 
-
-if (isset($_POST['submit'])) {
-
-    $product_name = $_POST['product_name'];
-    $product_desc = $_POST['product_desc'];
-    $product_price = $_POST['product_price'];
-    $product_special = $_POST['product_special'];
-    $category_id    = $_POST['select'];
+$query="SELECT * FROM categories WHERE category_id = {$_GET['id']};";
 
 
-    $image_name = $_FILES['product_image']['name'];
-    $tmp_name   = $_FILES['product_image']['tmp_name'];
-    $path       = 'images/product_images/';
+$result=mysqli_query($connection, $query);
+
+$row=mysqli_fetch_assoc($result);
+
+
+
+
+if (isset($_POST['category_submit'])) {
+
+    $category_name = $_POST['category_name'];
+    $category_desc = $_POST['category_desc'];
+
+
+    $image_name = $_FILES['category_image']['name'];
+    $tmp_name   = $_FILES['category_image']['tmp_name'];
+    $path       = 'images/categories_images/';
 
     // echo "<pre>";
     // print_r($_FILES);
@@ -55,17 +60,22 @@ if (isset($_POST['submit'])) {
     // die;
 
 
-    $query = "INSERT into products (product_name, product_desc,product_image,product_price,product_special,category_id)
-              VALUES ('$product_name',' $product_desc','$path$image_name','$product_price','$product_special','$category_id');";
+    $query = "UPDATE categories SET category_name   =  '$category_name',
+                                 category_desc    =  '$category_desc',
+                                 category_image  =  '$path$image_name'
+                               
 
-    mysqli_query($connection,$query);
+                 WHERE category_id = {$_GET['id']}";
+
+
+    mysqli_query($connection, $query);
+    header("location:manage_categories.php");
 }
 
 
 
 
 ?>
-
 
 
 <!doctype html>
@@ -288,68 +298,33 @@ if (isset($_POST['submit'])) {
                         <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-1"></div>
                         <div class="col-xl-10 col-lg-10 col-md-10 col-sm-10 col-10">
                             <div class="card">
-                                <h5 class="card-header">Manage Products</h5>
+                                <h5 class="card-header">Manage Categories</h5>
                                 <div class="card-body">
-                                    <form class="needs-validation" method="POST" enctype="multipart/form-data" novalidate>
+                                    <form class="needs-validation" action=""  method="post" enctype="multipart/form-data">
                                         <div class="row">
-                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mt-3 ">
-                                                <label for="validationCustom01">Product Name</label>
-                                                <input type="text" class="form-control" id="product_name" name="product_name" placeholder="Product Name" value="Mark" required>
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                                <label for="validationCustom01">Category name</label>
+                                                <input type="text" class="form-control" id="validationCustom01"  name="category_name"  placeholder="First name" value="<?php echo $row['category_name']?>" required>
                                                 <div class="valid-feedback">
-                                                  
+                                                    Looks good!
                                                 </div>
                                             </div>
                                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mt-3">
-                                                <label for="validationCustom01">Product Description</label>
-                                                <input type="text" class="form-control" id="product_des" name="product_desc" placeholder="Product Description" value="Mark" required>
+                                                <label for="validationCustom01">Category desc</label>
+                                                <textarea rows="6" cols="50" name="category_desc"  style="width:100%"   value="">   Enter text here...</textarea><br>
                                                 <div class="valid-feedback">
-                                                  
+                                                    Looks good!
+                                                </div>
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12  mt-3">
+                                                <label for="validationCustom02">category img</label>
+                                                <input type="file" class="form-control" id="validationCustom02" value= "<?php echo $row['category_image']?>" name="category_image">
+                                                <div class="valid-feedback">
+                                                    Looks good!
                                                 </div>
                                             </div>
-                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mt-3 ">
-                                                <label for="validationCustom01">Product Price</label>
-                                                <input type="text" class="form-control" id="product_price" name="product_price" placeholder="Product Name" value="Mark" required>
-                                                <div class="valid-feedback">
-                                                  
-                                                </div>
-                                            </div>
-                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mt-3 ">
-                                                <label for="validationCustom01">Upload Product Image</label>
-                                                <input type="file" id="file-multiple-input" name="product_image" multiple="" class="form-control-file">
-                                                <div class="valid-feedback">
-                                                  
-                                                </div>
-                                            </div>
-                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mt-3 ">
-                                                <label for="validationCustom01">Product Special Price</label>
-                                                <input type="text" class="form-control" id="product_special" name="product_special" placeholder="Product Name" value="Mark" required>
-                                                <div class="valid-feedback">
-                                                  
-                                                </div>
-                                            </div>
-                                            
-                                           
-                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mt-3 ">
-                                        <label for="select" class=" form-control-label">Select Category</label>
-                                        <select name="select" id="select" class="form-control">
-                                            <option value="0">Please select</option>
-                                            <!-- <option value="1">1</option> -->
-                                            <?php
-                                            $query = "select * from categories;";
-                                            $result = mysqli_query($connection,$query);
-                                            while($row=mysqli_fetch_assoc($result)){
-                                                echo "<option value={$row['category_id']}>{$row['category_name']}</option>";
-                                            }
-                                            ?>
-                                        </select>
-                                    
-                                </div>
-                                           
                                         </div>
-                                        <div class="form-row">
-                                        
-                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mt-3 ">
-                                                <button class="btn btn-primary" name="submit" type="submit">Create Product</button>
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mt-3 mr-3" >
+                                                <button class="btn btn-primary" name="category_submit"  type="submit" >Submit form</button>
                                             </div>
                                         </div>
                                     </form>
@@ -361,64 +336,50 @@ if (isset($_POST['submit'])) {
                         <!-- end validation form -->
                         <!-- ============================================================== -->
                     </div>
-
                     <div class="row">
                     <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-1"></div>
-                        
                         <div class="col-xl-10 col-lg-10 col-md-10 col-sm-10 col-10">
                             <div class="card">
-                                <h5 class="card-header">Striped Table</h5>
+                                <h5 class="card-header">Categories Table</h5>
                                 <div class="card-body">
                                     <table class="table table-striped">
                                         <thead>
                                             <tr>
-                                                <th scope="col">#</th>
-                                                <th scope="col">Product Name</th>
-                                                <th scope="col">Product Description</th>
-                                                <th scope="col">Product Image</th>
-                                                <th scope="col">Product Price</th>
-                                                <th scope="col">Product Special Price</th>
-                                                <th scope="col">Category Id</th>
-                                                <th scope="col">Edit</th>
-                                                <th scope="col">Delete</th>
-
+                                                <th scope="col">ID</th>
+                                                <th scope="col">category name</th>
+                                                <th scope="col">category Description</th>
+                                                <th scope="col">category img</th>
+                                                <th scope="col">edit</th>
+                                                <th scope="col">delete</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                         <?php
-                        $query  = "select * from products ";
+                        $query  = "select * from categories ";
                         $result = mysqli_query($connection, $query);
                         while ($row = mysqli_fetch_assoc($result)) {
                             echo "<tr>";
-                            echo "<td>{$row['product_id']}</td>";
-                            echo "<td>{$row['product_name']}</td>";
-                            echo "<td>{$row['product_desc']}</td>";
-                            echo "<td><img src='{$row['product_image']}' style='width:10em; height:7em'></td>";
-                            echo "<td>{$row['product_price']}</td>";
-                            echo "<td>{$row['product_special']}</td>";
                             echo "<td>{$row['category_id']}</td>";
-                            echo "<td><a href='edit_product.php?id={$row['product_id']}' class='btn btn-primary'>Edit</a></td>";
-                            echo "<td><a href='delete.php?id={$row['product_id']}' class='btn btn-danger'>Delete</a></td>";
+                            echo "<td>{$row['category_name']}</td>";
+                            echo "<td>{$row['category_desc']}</td>";
+                            echo "<td><img src='{$row['category_image']}' style='width:10em; height:7em'></td>";
+                            echo "<td><a href='edit_categories.php?id={$row['category_id']}' class='btn btn-primary'>Edit</a></td>";
+                            echo "<td><a href='delete.php?id={$row['category_id']}' class='btn btn-danger'>Delete</a></td>";
                             echo "</tr>";
                         }
                         ?>
-                                        </tbody>
-                                    </table>
+       
+
+    </tbody>
+  </table>
+
                                 </div>
                             </div>
                         </div>
+                        
                         <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-1"></div>
 </div>
 
-                        
-                        
-                        
-                        
-                        
-                        
-                    </div>
-                </div>
-            </div>
             <!-- ============================================================== -->
             <!-- footer -->
             <!-- ============================================================== -->

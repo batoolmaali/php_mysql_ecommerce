@@ -1,3 +1,51 @@
+<?php 
+
+session_start();
+
+if(isset($_SESSION['admin'])){
+
+}
+else{
+    echo "NOT ALLOWED TO VIEW THIS PAGE";
+    die();
+}
+
+
+$connection = mysqli_connect("localhost","root" ,"" ,"project4_ecommerce");
+
+if(!$connection){
+    die("can not connect to the server");
+}
+
+
+if (isset($_POST['customer_submit'])){
+
+    
+    
+    $customer_name      = $_POST['customer_name'];
+    $customer_email     = $_POST['customer_email'];
+    $customer_password  = $_POST['customer_password'];
+    $customer_phone     = $_POST['customer_phone'];
+    $customer_address   = $_POST['customer_address'];
+    
+
+    $query   = "INSERT INTO customers (customer_name, customer_email, customer_phone, customer_password, customer_address) 
+    VALUES ('$customer_name' , '$customer_email' ,'$customer_phone' , '$customer_password' , '$customer_address' ) ";
+        
+    mysqli_query($connection, $query);
+    
+}
+
+
+    
+
+
+else {
+    echo "Not set";
+}
+
+?>
+
 <!doctype html>
 <html lang="en">
  
@@ -15,9 +63,8 @@
     <link rel="stylesheet" href="assets/vendor/fonts/material-design-iconic-font/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="assets/vendor/charts/c3charts/c3.css">
     <link rel="stylesheet" href="assets/vendor/fonts/flag-icon-css/flag-icon.min.css">
-    <title>Concept - Bootstrap 4 Admin Dashboard Template</title>
+    <title>Manage Customer</title>
 </head>
-
 <body>
     <!-- ============================================================== -->
     <!-- main wrapper -->
@@ -170,7 +217,6 @@
                                 <a class="nav-link " href="manage_orders.php"  aria-expanded="false" data-target="#submenu-1" aria-controls="submenu-1"><i class="fas fa-fw fa-table"></i>Manage Orders <span class="badge badge-success">6</span></a>
                                 
                             </li>
-
                         </ul>
                     </div>
                 </nav>
@@ -192,13 +238,13 @@
                     
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                             <div class="page-header">
-                                <h2 class="pageheader-title">E-commerce Dashboard Template </h2>
+                                <h2 class="pageheader-title">Manage Customer </h2>
                                 <p class="pageheader-text">Nulla euismod urna eros, sit amet scelerisque torton lectus vel mauris facilisis faucibus at enim quis massa lobortis rutrum.</p>
                                 <div class="page-breadcrumb">
                                     <nav aria-label="breadcrumb">
                                         <ol class="breadcrumb">
-                                            <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">Dashboard</a></li>
-                                            <li class="breadcrumb-item active" aria-current="page">E-Commerce Dashboard Template</li>
+                                            <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">Menu</a></li>
+                                            <li class="breadcrumb-item active" aria-current="page">Manage Customer</li>
                                         </ol>
                                     </nav>
                                 </div>
@@ -210,7 +256,6 @@
                     <!-- end pageheader  -->
                     <!-- ============================================================== -->
                     <div class="ecommerce-widget">
-
                     <div class="row">
                         <!-- ============================================================== -->
                         <!-- validation form -->
@@ -218,75 +263,51 @@
                         <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-1"></div>
                         <div class="col-xl-10 col-lg-10 col-md-10 col-sm-10 col-10">
                             <div class="card">
-                                <h5 class="card-header">Bootstrap Validation Form</h5>
+                                <h5 class="card-header">Manage Customer</h5>
                                 <div class="card-body">
-                                    <form class="needs-validation" novalidate>
+                                    <form class="needs-validation" novalidate action="" method="POST">
                                         <div class="row">
-                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 ">
-                                                <label for="validationCustom01">First name</label>
-                                                <input type="text" class="form-control" id="validationCustom01" placeholder="First name" value="Mark" required>
-                                                <div class="valid-feedback">
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mt-3 ">
+                                                <label for="validationCustom01">Customer Name</label>
+                                                <input type="text" class="form-control" id="validationCustom01" placeholder="Enter Customer name" name="customer_name" required>
+                                                <!-- <div class="valid-feedback">
                                                     Looks good!
-                                                </div>
+                                                </div> -->
                                             </div>
-                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 ">
-                                                <label for="validationCustom02">Last name</label>
-                                                <input type="text" class="form-control" id="validationCustom02" placeholder="Last name" value="Otto" required>
-                                                <div class="valid-feedback">
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mt-3">
+                                                <label for="validationCustom02">Customer Email</label>
+                                                <input type="text" class="form-control" id="validationCustom02" placeholder="Enter Customer Email" name="customer_email" required>
+                                                <!-- <div class="valid-feedback">
                                                     Looks good!
-                                                </div>
+                                                </div> -->
                                             </div>
-                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 ">
-                                                <label for="validationCustomUsername">Username</label>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text" id="inputGroupPrepend">@</span>
-                                                    </div>
-                                                    <input type="text" class="form-control" id="validationCustomUsername" placeholder="Username" aria-describedby="inputGroupPrepend" required>
-                                                    <div class="invalid-feedback">
-                                                        Please choose a username.
-                                                    </div>
-                                                </div>
+
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mt-3">
+                                                <label for="validationCustom02">Customer Password</label>
+                                                <input type="password" class="form-control" id="validationCustom02" placeholder="Enter Customer Password" name="customer_password" required>
+                                                <!-- <div class="valid-feedback">
+                                                    Looks good!
+                                                </div> -->
+                                            </div>
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mt-3">
+                                                <label for="validationCustom02">Customer Phone</label>
+                                                <input type="numbers" class="form-control" id="validationCustom02" placeholder="Enter Customer Phone" name="customer_phone" required>
+                                                <!-- <div class="valid-feedback">
+                                                    Looks good!
+                                                </div> -->
+                                            </div>
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mt-3">
+                                                <label for="validationCustom02">Customer Address</label>
+                                                <input type="text" class="form-control" id="validationCustom02" placeholder="Enter Customer Address" name="customer_address" required>
+                                                <!-- <div class="valid-feedback">
+                                                    Looks good!
+                                                </div> -->
                                             </div>
                                         </div>
-                                        <div class="form-row">
-                                            <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 mb-2">
-                                                <label for="validationCustom03">City</label>
-                                                <input type="text" class="form-control" id="validationCustom03" placeholder="City" required>
-                                                <div class="invalid-feedback">
-                                                    Please provide a valid city.
-                                                </div>
-                                            </div>
-                                            <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 mb-2">
-                                                <label for="validationCustom04">State</label>
-                                                <input type="text" class="form-control" id="validationCustom04" placeholder="State" required>
-                                                <div class="invalid-feedback">
-                                                    Please provide a valid state.
-                                                </div>
-                                            </div>
-                                            <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 mb-2">
-                                                <label for="validationCustom05">Zip</label>
-                                                <input type="text" class="form-control" id="validationCustom05" placeholder="Zip" required>
-                                                <div class="invalid-feedback">
-                                                    Please provide a valid zip.
-                                                </div>
-                                            </div>
-                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                                                <div class="form-group">
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
-                                                        <label class="form-check-label" for="invalidCheck">
-                                                            Agree to terms and conditions
-                                                        </label>
-                                                        <div class="invalid-feedback">
-                                                            You must agree before submitting.
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 ">
-                                                <button class="btn btn-primary" type="submit">Submit form</button>
-                                            </div>
+                                         <div class="row">
+                                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mt-3 ">
+                                             <button class="btn btn-primary" type="submit" name="customer_submit">Submit form</button>
+                                        </div>
                                         </div>
                                     </form>
                                 </div>
@@ -297,42 +318,45 @@
                         <!-- end validation form -->
                         <!-- ============================================================== -->
                     </div>
-
                     <div class="row">
                     <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-1"></div>
                         
                         <div class="col-xl-10 col-lg-10 col-md-10 col-sm-10 col-10">
                             <div class="card">
-                                <h5 class="card-header">Striped Table</h5>
+                                <h5 class="card-header">Customers Informations</h5>
                                 <div class="card-body">
                                     <table class="table table-striped">
                                         <thead>
                                             <tr>
-                                                <th scope="col">#</th>
-                                                <th scope="col">First</th>
-                                                <th scope="col">Last</th>
-                                                <th scope="col">Handle</th>
+                                                <th scope="col">Customer ID</th>
+                                                <th scope="col">Customer Name</th>
+                                                <th scope="col">Customer Email</th>
+                                                <th scope="col">Customer Phone</th>
+                                                <th scope="col">Customer Address</th>
+                                                <th scope="col">Edit</th>
+                                                <th scope="col">Delete</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <th scope="row">1</th>
-                                                <td>Mark</td>
-                                                <td>Otto</td>
-                                                <td>@mdo</td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">2</th>
-                                                <td>Jacob</td>
-                                                <td>Thornton</td>
-                                                <td>@fat</td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">3</th>
-                                                <td>Larry</td>
-                                                <td>the Bird</td>
-                                                <td>@twitter</td>
-                                            </tr>
+                                        <?php 
+                                        
+                                        $query  = "SELECT * FROM customers ";
+                                        $result =  mysqli_query($connection,$query);
+                                        while ($row = mysqli_fetch_assoc($result)){
+                                         
+                                            echo "<tr>";
+                                              echo "<td>{$row['customer_id']}</td>";
+                                              echo "<td>{$row['customer_name']}</td>";
+                                              echo "<td>{$row['customer_email']}</td>";
+                                              echo "<td>{$row['customer_phone']}</td>";
+                                              echo "<td>{$row['customer_address']}</td>";
+                                              echo "<td><a href='edit_customers.php?id={$row['customer_id']}' class='btn btn-primary'>Edit</a></td>";
+                                              echo "<td><a href='delete.php?id={$row['customer_id']}' class='btn btn-danger'>Delete</a></td>";
+                                              echo "</tr>";
+                                        }
+                                        
+
+                                        ?>
                                         </tbody>
                                     </table>
                                 </div>
@@ -340,7 +364,6 @@
                         </div>
                         <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-1"></div>
 </div>
-
                         
                         
                         
